@@ -1,0 +1,878 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>美观闹钟 | Beautiful Alarm Clock</title>
+    <style>
+        :root {
+            /* 默认主题 (深色) */
+            --bg-color: #121212;
+            --clock-bg: #1e1e1e;
+            --display-bg: #252525;
+            --display-text: #ffffff;
+            --btn-primary-bg: #ff9500;
+            --btn-primary-color: white;
+            --btn-secondary-bg: #555;
+            --btn-secondary-color: white;
+            --btn-danger-bg: #ff3b30;
+            --btn-danger-color: white;
+            --btn-success-bg: #34c759;
+            --btn-success-color: white;
+            --input-bg: #333;
+            --input-color: white;
+            --title-color: white;
+            --text-color: #e0e0e0;
+            --border-color: #444;
+            --shadow-color: rgba(0, 0, 0, 0.3);
+            --alarm-active-color: #34c759;
+            --alarm-inactive-color: #999;
+        }
+
+        /* 浅色主题 */
+        .theme-light {
+            --bg-color: #f0f0f0;
+            --clock-bg: #ffffff;
+            --display-bg: #f8f8f8;
+            --display-text: #121212;
+            --btn-primary-bg: #007aff;
+            --btn-primary-color: white;
+            --btn-secondary-bg: #d4d4d4;
+            --btn-secondary-color: #333;
+            --btn-danger-bg: #ff3b30;
+            --btn-danger-color: white;
+            --btn-success-bg: #34c759;
+            --btn-success-color: white;
+            --input-bg: #ffffff;
+            --input-color: #333;
+            --title-color: #333;
+            --text-color: #555;
+            --border-color: #ddd;
+            --shadow-color: rgba(0, 0, 0, 0.1);
+            --alarm-active-color: #34c759;
+            --alarm-inactive-color: #999;
+        }
+
+        /* 蓝色主题 */
+        .theme-blue {
+            --bg-color: #e6f7ff;
+            --clock-bg: #1a5276;
+            --display-bg: #2980b9;
+            --display-text: white;
+            --btn-primary-bg: #f39c12;
+            --btn-primary-color: white;
+            --btn-secondary-bg: #3498db;
+            --btn-secondary-color: white;
+            --btn-danger-bg: #e74c3c;
+            --btn-danger-color: white;
+            --btn-success-bg: #2ecc71;
+            --btn-success-color: white;
+            --input-bg: #2c3e50;
+            --input-color: white;
+            --title-color: white;
+            --text-color: white;
+            --border-color: #3498db;
+            --shadow-color: rgba(0, 0, 0, 0.2);
+            --alarm-active-color: #2ecc71;
+            --alarm-inactive-color: #95a5a6;
+        }
+
+        /* 粉色主题 */
+        .theme-pink {
+            --bg-color: #fff0f5;
+            --clock-bg: #d81b60;
+            --display-bg: #c2185b;
+            --display-text: white;
+            --btn-primary-bg: #8e24aa;
+            --btn-primary-color: white;
+            --btn-secondary-bg: #f06292;
+            --btn-secondary-color: white;
+            --btn-danger-bg: #e53935;
+            --btn-danger-color: white;
+            --btn-success-bg: #43a047;
+            --btn-success-color: white;
+            --input-bg: #ad1457;
+            --input-color: white;
+            --title-color: white;
+            --text-color: white;
+            --border-color: #f06292;
+            --shadow-color: rgba(216, 27, 96, 0.3);
+            --alarm-active-color: #43a047;
+            --alarm-inactive-color: #9e9e9e;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: var(--bg-color);
+            transition: background-color 0.3s ease;
+            color: var(--text-color);
+        }
+
+        .sound-controls {
+            margin-top: 10px;
+            text-align: center;
+            padding: 10px;
+            background-color: var(--display-bg);
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+
+        .sound-controls label {
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        .sound-controls input[type="range"] {
+            width: 100%;
+            margin-top: 5px;
+        }
+
+        .alarm-clock {
+            width: 360px;
+            background-color: var(--clock-bg);
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 10px 25px var(--shadow-color);
+            transition: all 0.3s ease;
+        }
+
+        .title {
+            font-size: 1.5rem;
+            color: var(--title-color);
+            text-align: center;
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .theme-selector {
+            position: relative;
+        }
+
+        .theme-btn {
+            background-color: var(--btn-secondary-bg);
+            color: var(--btn-secondary-color);
+            border: none;
+            padding: 8px 12px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: background-color 0.2s;
+        }
+
+        .theme-btn:hover {
+            opacity: 0.9;
+        }
+
+        .theme-dropdown {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background-color: var(--clock-bg);
+            border-radius: 5px;
+            box-shadow: 0 5px 15px var(--shadow-color);
+            z-index: 10;
+            display: none;
+            width: 150px;
+            margin-top: 5px;
+        }
+
+        .theme-dropdown.show {
+            display: block;
+        }
+
+        .theme-option {
+            padding: 10px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .theme-option:hover {
+            background-color: var(--display-bg);
+        }
+
+        .clock-display {
+            background-color: var(--display-bg);
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            margin-bottom: 20px;
+            box-shadow: inset 0 2px 5px var(--shadow-color);
+        }
+
+        .time {
+            font-size: 3.5rem;
+            color: var(--display-text);
+            font-weight: bold;
+            letter-spacing: 2px;
+            margin-bottom: 5px;
+        }
+
+        .date {
+            font-size: 1rem;
+            color: var(--display-text);
+            opacity: 0.8;
+        }
+
+        .alarm-form {
+            margin-bottom: 20px;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .input-group {
+            flex: 1;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-size: 0.9rem;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid var(--border-color);
+            background-color: var(--input-bg);
+            color: var(--input-color);
+            font-size: 1rem;
+        }
+
+        .btn-row {
+            display: flex;
+            gap: 10px;
+        }
+
+        button {
+            padding: 12px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.2s;
+            flex: 1;
+        }
+
+        button:hover {
+            opacity: 0.9;
+        }
+
+        .btn-primary {
+            background-color: var(--btn-primary-bg);
+            color: var(--btn-primary-color);
+        }
+
+        .btn-secondary {
+            background-color: var(--btn-secondary-bg);
+            color: var(--btn-secondary-color);
+        }
+
+        .btn-danger {
+            background-color: var(--btn-danger-bg);
+            color: var(--btn-danger-color);
+        }
+
+        .btn-success {
+            background-color: var(--btn-success-bg);
+            color: var(--btn-success-color);
+        }
+
+        .alarm-list {
+            margin-top: 20px;
+        }
+
+        .alarm-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px;
+            background-color: var(--display-bg);
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+
+        .alarm-time {
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+
+        .alarm-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .alarm-actions button {
+            padding: 5px 10px;
+            font-size: 0.8rem;
+        }
+
+        .alarm-status {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .status-indicator {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background-color: var(--alarm-inactive-color);
+        }
+
+        .status-indicator.active {
+            background-color: var(--alarm-active-color);
+        }
+
+        .alarm-ringing {
+            animation: pulse 1s infinite alternate;
+        }
+
+        @keyframes pulse {
+            from {
+                box-shadow: 0 0 5px 0 var(--btn-primary-bg);
+            }
+            to {
+                box-shadow: 0 0 20px 5px var(--btn-primary-bg);
+            }
+        }
+
+        @media (max-width: 400px) {
+            .alarm-clock {
+                width: 100%;
+                border-radius: 0;
+                padding: 15px;
+            }
+
+            .time {
+                font-size: 3rem;
+            }
+
+            .form-row {
+                flex-direction: column;
+                gap: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="alarm-clock" id="alarm-clock">
+        <div class="title">美观闹钟 | Beautiful Alarm Clock</div>
+        <div class="controls">
+            <div class="theme-selector">
+                <button class="theme-btn" onclick="toggleThemeDropdown()">主题 | Theme</button>
+                <div class="theme-dropdown" id="theme-dropdown">
+                    <div class="theme-option" onclick="setTheme('default')">深色主题 | Dark</div>
+                    <div class="theme-option" onclick="setTheme('light')">浅色主题 | Light</div>
+                    <div class="theme-option" onclick="setTheme('blue')">蓝色主题 | Blue</div>
+                    <div class="theme-option" onclick="setTheme('pink')">粉色主题 | Pink</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="clock-display" id="clock-display">
+            <div class="time" id="current-time">00:00:00</div>
+            <div class="date" id="current-date">星期一, 2023年1月1日</div>
+        </div>
+
+        <div class="alarm-form">
+            <div class="form-row">
+                <div class="input-group">
+                    <label for="alarm-hours">时 | Hours</label>
+                    <select id="alarm-hours">
+                        <!-- Will be filled by JavaScript -->
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label for="alarm-minutes">分 | Minutes</label>
+                    <select id="alarm-minutes">
+                        <!-- Will be filled by JavaScript -->
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label for="alarm-ampm">AM/PM</label>
+                    <select id="alarm-ampm">
+                        <option value="AM">AM</option>
+                        <option value="PM">PM</option>
+                    </select>
+                </div>
+            </div>
+            <div class="btn-row">
+                <button class="btn-primary" id="set-alarm-btn">设置闹钟 | Set Alarm</button>
+                <button class="btn-secondary" id="clear-alarm-btn">清除 | Clear</button>
+            </div>
+        </div>
+
+        <div class="sound-controls">
+            <div class="form-row">
+                <div class="input-group">
+                    <label for="alarm-sound-select">闹钟铃声 | Alarm Sound:</label>
+                    <select id="alarm-sound-select">
+                        <option value="https://assets.mixkit.co/sfx/preview/mixkit-alarm-digital-clock-beep-989.mp3">数字闹钟 | Digital Beep</option>
+                        <option value="https://assets.mixkit.co/sfx/preview/mixkit-classic-alarm-995.mp3">经典闹钟 | Classic Alarm</option>
+                        <option value="https://assets.mixkit.co/sfx/preview/mixkit-alarm-tone-996.mp3">警报声 | Alert Tone</option>
+                        <option value="https://assets.mixkit.co/sfx/preview/mixkit-interface-hint-notification-911.mp3">提示音 | Notification</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label for="alarm-volume">闹钟音量 | Alarm Volume:</label>
+                    <input type="range" id="alarm-volume" min="0" max="1" step="0.1" value="0.7">
+                </div>
+            </div>
+            <button class="btn-secondary" id="test-sound-btn" style="margin-top: 10px;">测试铃声 | Test Sound</button>
+        </div>
+
+        <div class="alarm-list" id="alarm-list">
+            <!-- Alarm items will be added here by JavaScript -->
+        </div>
+    </div>
+
+    <audio id="alarm-sound" preload="auto" loop>
+        <source src="https://assets.mixkit.co/sfx/preview/mixkit-alarm-digital-clock-beep-989.mp3" type="audio/mpeg">
+        Your browser does not support the audio element.
+    </audio>
+
+
+
+    <script>
+        // DOM Elements
+        const currentTimeElement = document.getElementById('current-time');
+        const currentDateElement = document.getElementById('current-date');
+        const alarmHoursSelect = document.getElementById('alarm-hours');
+        const alarmMinutesSelect = document.getElementById('alarm-minutes');
+        const alarmAmPmSelect = document.getElementById('alarm-ampm');
+        const setAlarmBtn = document.getElementById('set-alarm-btn');
+        const clearAlarmBtn = document.getElementById('clear-alarm-btn');
+        const alarmListElement = document.getElementById('alarm-list');
+        const alarmSound = document.getElementById('alarm-sound');
+        const alarmVolume = document.getElementById('alarm-volume');
+        const alarmSoundSelect = document.getElementById('alarm-sound-select');
+        const testSoundBtn = document.getElementById('test-sound-btn');
+        const clockDisplay = document.getElementById('clock-display');
+        const themeDropdown = document.getElementById('theme-dropdown');
+
+        // Global variables
+        let alarms = JSON.parse(localStorage.getItem('alarms')) || [];
+        let isAlarmRinging = false;
+        let alarmTimeout;
+
+        // Initialize the page
+        function init() {
+            // Populate hours dropdown
+            for (let i = 1; i <= 12; i++) {
+                const option = document.createElement('option');
+                option.value = i;
+                option.textContent = i < 10 ? `0${i}` : i;
+                alarmHoursSelect.appendChild(option);
+            }
+
+            // Populate minutes dropdown
+            for (let i = 0; i < 60; i++) {
+                const option = document.createElement('option');
+                option.value = i;
+                option.textContent = i < 10 ? `0${i}` : i;
+                alarmMinutesSelect.appendChild(option);
+            }
+
+            // Load saved theme
+            const savedTheme = localStorage.getItem('alarmClockTheme');
+            if (savedTheme) {
+                setTheme(savedTheme);
+            }
+
+            // Update time immediately and then every second
+            updateTime();
+            setInterval(updateTime, 1000);
+
+            // Render saved alarms
+            renderAlarms();
+
+            // Add event listeners
+            setAlarmBtn.addEventListener('click', setAlarm);
+            clearAlarmBtn.addEventListener('click', clearAlarmForm);
+            testSoundBtn.addEventListener('click', testAlarmSound);
+            alarmSoundSelect.addEventListener('change', updateAlarmSound);
+
+            // Load saved sound preference
+            const savedSound = localStorage.getItem('alarmSound');
+            if (savedSound) {
+                alarmSoundSelect.value = savedSound;
+                updateAlarmSound();
+            }
+
+            // Close theme dropdown when clicking outside
+            document.addEventListener('click', function(event) {
+                if (!event.target.closest('.theme-selector')) {
+                    themeDropdown.classList.remove('show');
+                }
+            });
+        }
+
+        // Update current time and date
+        function updateTime() {
+            const now = new Date();
+
+            // Format time: HH:MM:SS
+            const hours = now.getHours();
+            const minutes = now.getMinutes();
+            const seconds = now.getSeconds();
+
+            const formattedHours = hours < 10 ? `0${hours}` : hours;
+            const formattedMinutes = minutes < 10 ? `0${minutes}` : minutes;
+            const formattedSeconds = seconds < 10 ? `0${seconds}` : seconds;
+
+            currentTimeElement.textContent = `${formattedHours}:${formattedMinutes}:${formattedSeconds}`;
+
+            // Format date: Weekday, Year-Month-Day
+            const options = {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            };
+            currentDateElement.textContent = now.toLocaleDateString('zh-CN', options);
+
+            // Check if any alarm should ring
+            checkAlarms(hours, minutes, seconds);
+        }
+
+        // Set a new alarm
+        function setAlarm() {
+            const hours = parseInt(alarmHoursSelect.value);
+            const minutes = parseInt(alarmMinutesSelect.value);
+            const ampm = alarmAmPmSelect.value;
+
+            // Convert to 24-hour format
+            let hours24 = hours;
+            if (ampm === 'PM' && hours < 12) {
+                hours24 = hours + 12;
+            } else if (ampm === 'AM' && hours === 12) {
+                hours24 = 0;
+            }
+
+            // Create new alarm object
+            const newAlarm = {
+                id: Date.now(),
+                hours: hours24,
+                minutes: minutes,
+                enabled: true
+            };
+
+            // Add to alarms array
+            alarms.push(newAlarm);
+
+            // Save to localStorage
+            saveAlarms();
+
+            // Render alarms
+            renderAlarms();
+
+            // Clear form
+            clearAlarmForm();
+
+            // Show confirmation
+            alert('闹钟已设置! | Alarm has been set!');
+        }
+
+        // Clear alarm form
+        function clearAlarmForm() {
+            alarmHoursSelect.value = 1;
+            alarmMinutesSelect.value = 0;
+            alarmAmPmSelect.value = 'AM';
+        }
+
+        // Render all alarms
+        function renderAlarms() {
+            alarmListElement.innerHTML = '';
+
+            if (alarms.length === 0) {
+                alarmListElement.innerHTML = '<p style="text-align: center; padding: 10px;">没有设置闹钟 | No alarms set</p>';
+                return;
+            }
+
+            alarms.forEach(alarm => {
+                // Convert 24-hour format to 12-hour format for display
+                let displayHours = alarm.hours;
+                let ampm = 'AM';
+
+                if (displayHours >= 12) {
+                    ampm = 'PM';
+                    if (displayHours > 12) {
+                        displayHours -= 12;
+                    }
+                }
+
+                if (displayHours === 0) {
+                    displayHours = 12;
+                }
+
+                const formattedHours = displayHours < 10 ? `0${displayHours}` : displayHours;
+                const formattedMinutes = alarm.minutes < 10 ? `0${alarm.minutes}` : alarm.minutes;
+
+                const alarmItem = document.createElement('div');
+                alarmItem.className = 'alarm-item';
+                alarmItem.innerHTML = `
+                    <div class="alarm-time">${formattedHours}:${formattedMinutes} ${ampm}</div>
+                    <div class="alarm-status">
+                        <div class="status-indicator ${alarm.enabled ? 'active' : ''}"></div>
+                        <span>${alarm.enabled ? '已启用 | Enabled' : '已禁用 | Disabled'}</span>
+                    </div>
+                    <div class="alarm-actions">
+                        <button class="btn-${alarm.enabled ? 'secondary' : 'success'}" onclick="toggleAlarm(${alarm.id})">
+                            ${alarm.enabled ? '禁用 | Disable' : '启用 | Enable'}
+                        </button>
+                        <button class="btn-danger" onclick="deleteAlarm(${alarm.id})">删除 | Delete</button>
+                    </div>
+                `;
+
+                alarmListElement.appendChild(alarmItem);
+            });
+        }
+
+        // Toggle alarm enabled/disabled
+        function toggleAlarm(id) {
+            alarms = alarms.map(alarm => {
+                if (alarm.id === id) {
+                    return { ...alarm, enabled: !alarm.enabled };
+                }
+                return alarm;
+            });
+
+            saveAlarms();
+            renderAlarms();
+        }
+
+        // Delete an alarm
+        function deleteAlarm(id) {
+            alarms = alarms.filter(alarm => alarm.id !== id);
+            saveAlarms();
+            renderAlarms();
+        }
+
+        // Save alarms to localStorage
+        function saveAlarms() {
+            localStorage.setItem('alarms', JSON.stringify(alarms));
+        }
+
+        // Check if any alarm should ring
+        function checkAlarms(hours, minutes, seconds) {
+            if (isAlarmRinging) return;
+
+            alarms.forEach(alarm => {
+                if (alarm.enabled && alarm.hours === hours && alarm.minutes === minutes && seconds === 0) {
+                    ringAlarm();
+                }
+            });
+        }
+
+        // Ring the alarm
+        function ringAlarm() {
+            isAlarmRinging = true;
+
+            // Set volume and play sound
+            alarmSound.volume = alarmVolume.value;
+
+            // Play with error handling
+            const playPromise = alarmSound.play();
+
+            if (playPromise !== undefined) {
+                playPromise.then(_ => {
+                    // Playback started successfully
+                    console.log("Alarm sound playing");
+                })
+                .catch(error => {
+                    // Auto-play was prevented or there was an error
+                    console.error("Error playing alarm sound:", error);
+                    // Try to play again after user interaction
+                    alert("请点击确定启用闹钟声音 | Please click OK to enable alarm sound");
+                    alarmSound.play();
+                });
+            }
+
+            // Add visual effect
+            clockDisplay.classList.add('alarm-ringing');
+
+            // Create stop button
+            const stopBtn = document.createElement('button');
+            stopBtn.className = 'btn-danger';
+            stopBtn.style.width = '100%';
+            stopBtn.style.marginTop = '10px';
+            stopBtn.textContent = '停止闹钟 | Stop Alarm';
+            stopBtn.onclick = stopAlarm;
+
+            // Create snooze button
+            const snoozeBtn = document.createElement('button');
+            snoozeBtn.className = 'btn-secondary';
+            snoozeBtn.style.width = '100%';
+            snoozeBtn.style.marginTop = '10px';
+            snoozeBtn.textContent = '稍后提醒 (5分钟) | Snooze (5 min)';
+            snoozeBtn.onclick = snoozeAlarm;
+
+            // Add buttons to the page
+            clockDisplay.appendChild(stopBtn);
+            clockDisplay.appendChild(snoozeBtn);
+
+            // Auto stop after 1 minute
+            alarmTimeout = setTimeout(() => {
+                if (isAlarmRinging) {
+                    stopAlarm();
+                }
+            }, 60000);
+        }
+
+        // Stop the alarm
+        function stopAlarm() {
+            isAlarmRinging = false;
+
+            // Stop sound
+            alarmSound.pause();
+            alarmSound.currentTime = 0;
+
+            // Remove visual effect
+            clockDisplay.classList.remove('alarm-ringing');
+
+            // Remove stop and snooze buttons
+            const buttons = clockDisplay.querySelectorAll('button');
+            buttons.forEach(button => button.remove());
+
+            // Clear timeout
+            clearTimeout(alarmTimeout);
+        }
+
+        // Snooze the alarm
+        function snoozeAlarm() {
+            // Stop current alarm
+            stopAlarm();
+
+            // Create a new alarm 5 minutes from now
+            const now = new Date();
+            let snoozeHours = now.getHours();
+            let snoozeMinutes = now.getMinutes() + 5;
+
+            // Adjust if minutes overflow
+            if (snoozeMinutes >= 60) {
+                snoozeMinutes -= 60;
+                snoozeHours += 1;
+
+                // Adjust if hours overflow
+                if (snoozeHours >= 24) {
+                    snoozeHours -= 24;
+                }
+            }
+
+            // Create snooze alarm
+            const snoozeAlarm = {
+                id: Date.now(),
+                hours: snoozeHours,
+                minutes: snoozeMinutes,
+                enabled: true
+            };
+
+            // Add to alarms array
+            alarms.push(snoozeAlarm);
+
+            // Save to localStorage
+            saveAlarms();
+
+            // Render alarms
+            renderAlarms();
+
+            // Show confirmation
+            alert('闹钟已设为5分钟后提醒 | Alarm snoozed for 5 minutes');
+        }
+
+        // Toggle theme dropdown
+        function toggleThemeDropdown() {
+            themeDropdown.classList.toggle('show');
+        }
+
+        // Test alarm sound
+        function testAlarmSound() {
+            // Save current state of the alarm sound
+            const wasPlaying = !alarmSound.paused;
+            const currentTime = alarmSound.currentTime;
+
+            // Stop if it was playing
+            if (wasPlaying) {
+                alarmSound.pause();
+            }
+
+            // Set volume
+            alarmSound.volume = alarmVolume.value;
+
+            // Reset time and play for 2 seconds
+            alarmSound.currentTime = 0;
+            alarmSound.play();
+
+            setTimeout(() => {
+                alarmSound.pause();
+                alarmSound.currentTime = 0;
+
+                // Resume if it was playing before
+                if (wasPlaying) {
+                    alarmSound.currentTime = currentTime;
+                    alarmSound.play();
+                }
+            }, 2000);
+        }
+
+        // Update alarm sound source
+        function updateAlarmSound() {
+            const selectedSound = alarmSoundSelect.value;
+
+            // Update audio source
+            const sourceElement = alarmSound.querySelector('source');
+            sourceElement.src = selectedSound;
+
+            // Reload the audio element
+            alarmSound.load();
+
+            // Save preference
+            localStorage.setItem('alarmSound', selectedSound);
+        }
+
+        // Set theme
+        function setTheme(theme) {
+            const alarmClock = document.getElementById('alarm-clock');
+
+            // Remove all theme classes
+            alarmClock.classList.remove('theme-light', 'theme-blue', 'theme-pink');
+
+            // Add selected theme class
+            if (theme !== 'default') {
+                alarmClock.classList.add(`theme-${theme}`);
+            }
+
+            // Save theme preference
+            localStorage.setItem('alarmClockTheme', theme);
+
+            // Close dropdown
+            themeDropdown.classList.remove('show');
+        }
+
+        // Initialize the page when DOM is loaded
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>
