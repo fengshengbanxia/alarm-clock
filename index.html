@@ -30,7 +30,7 @@
         }
 
         /* 浅色主题 */
-        。theme-light {
+        .theme-light {
             --bg-color: #f0f0f0;
             --clock-bg: #ffffff;
             --display-bg: #f8f8f8;
@@ -429,6 +429,7 @@
                 <div class="input-group">
                     <label for="alarm-sound-select">闹钟铃声 | Alarm Sound:</label>
                     <select id="alarm-sound-select">
+                        <option value="https://github.com/fengshengbanxia/alarm-clock/blob/main/aigei_com.mp3?raw=true">自定义铃声 | Custom Sound</option>
                         <option value="https://assets.mixkit.co/sfx/preview/mixkit-alarm-digital-clock-beep-989.mp3">数字闹钟 | Digital Beep</option>
                         <option value="https://assets.mixkit.co/sfx/preview/mixkit-classic-alarm-995.mp3">经典闹钟 | Classic Alarm</option>
                         <option value="https://assets.mixkit.co/sfx/preview/mixkit-alarm-tone-996.mp3">警报声 | Alert Tone</option>
@@ -449,7 +450,7 @@
     </div>
 
     <audio id="alarm-sound" preload="auto" loop>
-        <source src="https://assets.mixkit.co/sfx/preview/mixkit-alarm-digital-clock-beep-989.mp3" type="audio/mpeg">
+        <source src="https://github.com/fengshengbanxia/alarm-clock/blob/main/aigei_com.mp3?raw=true" type="audio/mpeg">
         Your browser does not support the audio element.
     </audio>
 
