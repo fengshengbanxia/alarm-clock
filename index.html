@@ -120,25 +120,107 @@
 
         .sound-controls {
             margin-top: 10px;
-            text-align: center;
-            padding: 10px;
-            background-color: var(--display-bg);
+            padding: 15px;
+            background-color: #d81b60; /* Pink background to match the right panel */
             border-radius: 8px;
             margin-bottom: 10px;
+            color: white;
         }
 
-        .sound-controls label {
-            display: block;
-            margin-bottom: 8px;
+        .sound-controls-row {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
         }
 
-        .sound-controls input[type="range"] {
+        .sound-label {
+            width: 140px;
+            text-align: right;
+            padding-right: 15px;
+            font-size: 0.95rem;
+            line-height: 1.3;
+        }
+
+        .sound-input {
+            flex: 1;
+        }
+
+        .custom-select {
             width: 100%;
-            margin-top: 5px;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            background-color: rgba(0, 0, 0, 0.2);
+            color: white;
+            font-size: 1rem;
+            appearance: none;
+            -webkit-appearance: none;
+            background-image: url('data:image/svg+xml;utf8,<svg fill="white" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/><path d="M0 0h24v24H0z" fill="none"/></svg>');
+            background-repeat: no-repeat;
+            background-position: right 10px center;
+        }
+
+        .custom-range {
+            width: 100%;
+            height: 10px;
+            -webkit-appearance: none;
+            appearance: none;
+            background: linear-gradient(to right, #3498db, #ffffff);
+            border-radius: 5px;
+            outline: none;
+        }
+
+        .custom-range::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: white;
+            cursor: pointer;
+            border: 2px solid #3498db;
+        }
+
+        .url-input-container {
+            display: flex;
+            gap: 10px;
+        }
+
+        .url-input {
+            flex: 1;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            background-color: rgba(0, 0, 0, 0.2);
+            color: white;
+            font-size: 1rem;
+        }
+
+        .add-btn {
+            width: 80px;
+            height: 80px;
+            border-radius: 5px;
+            background-color: #8e24aa;
+            color: white;
+            font-size: 0.9rem;
+            line-height: 1.3;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+
+        .container {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
         }
 
         .alarm-clock {
-            width: 360px;
+            width: 450px;
             background-color: var(--clock-bg);
             border-radius: 20px;
             padding: 25px;
@@ -147,8 +229,16 @@
         }
 
         .title {
-            font-size: 1.5rem;
+            font-size: 1.8rem;
             color: var(--title-color);
+            text-align: center;
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
+
+        .alarm-display-title {
+            font-size: 1.8rem;
+            color: #ff3b30;
             text-align: center;
             margin-bottom: 15px;
             font-weight: bold;
@@ -216,8 +306,45 @@
             box-shadow: inset 0 2px 5px var(--shadow-color);
         }
 
+        .alarm-display {
+            width: 450px;
+            background-color: #d81b60; /* Pink background for the alarm display */
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 10px 25px var(--shadow-color);
+            border: 3px solid #ff3b30;
+            display: flex;
+            flex-direction: column;
+            height: fit-content;
+            max-height: 600px;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .alarm-display::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to bottom, rgba(255,59,48,0.1) 0%, transparent 100%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .alarm-display-title {
+            font-size: 1.8rem;
+            color: white;
+            text-align: center;
+            margin-bottom: 15px;
+            font-weight: bold;
+            border-bottom: 2px solid white;
+            padding-bottom: 10px;
+        }
+
         .time {
-            font-size: 3.5rem;
+            font-size: 4.5rem;
             color: var(--display-text);
             font-weight: bold;
             letter-spacing: 2px;
@@ -225,7 +352,7 @@
         }
 
         .date {
-            font-size: 1rem;
+            font-size: 1.2rem;
             color: var(--display-text);
             opacity: 0.8;
         }
@@ -245,9 +372,9 @@
         }
 
         label {
+            font-size: 1.1rem;
             display: block;
             margin-bottom: 5px;
-            font-size: 0.9rem;
         }
 
         input, select {
@@ -270,7 +397,7 @@
             border: none;
             border-radius: 5px;
             cursor: pointer;
-            font-size: 1rem;
+            font-size: 1.1rem;
             transition: all 0.2s;
             flex: 1;
         }
@@ -299,40 +426,53 @@
             color: var(--btn-success-color);
         }
 
-        .alarm-list {
-            margin-top: 20px;
-        }
+        /* Removed alarm-list styles */
 
-        .alarm-item {
+        #alarm-display .alarm-item {
+            margin-bottom: 15px;
+            padding: 15px;
+            background-color: rgba(255, 255, 255, 0.15);
+            border-left: 4px solid white;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 12px;
-            background-color: var(--display-bg);
+            flex-wrap: wrap;
             border-radius: 8px;
-            margin-bottom: 10px;
         }
 
-        .alarm-time {
-            font-size: 1.2rem;
+        #alarm-display .alarm-time {
+            font-size: 1.8rem;
             font-weight: bold;
+            flex: 1;
+            min-width: 120px;
+            color: white;
         }
 
-        .alarm-actions {
+        #alarm-display .alarm-status {
+            flex: 1;
+            justify-content: center;
+            min-width: 120px;
+            color: white;
+        }
+
+        #alarm-display .alarm-actions {
             display: flex;
             gap: 8px;
+            margin-top: 10px;
+            width: 100%;
+            justify-content: flex-end;
         }
 
-        .alarm-actions button {
-            padding: 5px 10px;
-            font-size: 0.8rem;
+        #alarm-display .alarm-actions button {
+            padding: 8px 15px;
+            font-size: 1rem;
         }
 
-        .alarm-status {
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
+        /* Removed .alarm-item styles as we're only using #alarm-display .alarm-item */
+
+        /* Removed duplicate styles */
+
+        /* Removed duplicate styles */
 
         .status-indicator {
             width: 10px;
@@ -358,8 +498,24 @@
             }
         }
 
-        @media (max-width: 400px) {
-            .alarm-clock {
+        .no-alarms-message {
+            text-align: center;
+            padding: 30px;
+            font-size: 1.3rem;
+            color: white;
+            opacity: 0.7;
+            border: 2px dashed rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+
+        @media (max-width: 900px) {
+            .container {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .alarm-clock, .alarm-display {
                 width: 100%;
                 border-radius: 0;
                 padding: 15px;
@@ -377,75 +533,92 @@
     </style>
 </head>
 <body>
-    <div class="alarm-clock" id="alarm-clock">
-        <div class="title">美观闹钟 | Beautiful Alarm Clock</div>
-        <div class="controls">
-            <div class="theme-selector">
-                <button class="theme-btn" onclick="toggleThemeDropdown()">主题 | Theme</button>
-                <div class="theme-dropdown" id="theme-dropdown">
-                    <div class="theme-option" onclick="setTheme('default')">深色主题 | Dark</div>
-                    <div class="theme-option" onclick="setTheme('light')">浅色主题 | Light</div>
-                    <div class="theme-option" onclick="setTheme('blue')">蓝色主题 | Blue</div>
-                    <div class="theme-option" onclick="setTheme('pink')">粉色主题 | Pink</div>
+    <div class="container">
+        <div class="alarm-clock" id="alarm-clock">
+            <div class="title">美观闹钟 | Beautiful Alarm Clock</div>
+            <div class="controls">
+                <div class="theme-selector">
+                    <button class="theme-btn" onclick="toggleThemeDropdown()">主题 | Theme</button>
+                    <div class="theme-dropdown" id="theme-dropdown">
+                        <div class="theme-option" onclick="setTheme('default')">深色主题 | Dark</div>
+                        <div class="theme-option" onclick="setTheme('light')">浅色主题 | Light</div>
+                        <div class="theme-option" onclick="setTheme('blue')">蓝色主题 | Blue</div>
+                        <div class="theme-option" onclick="setTheme('pink')">粉色主题 | Pink</div>
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <div class="clock-display" id="clock-display">
-            <div class="time" id="current-time">00:00:00</div>
-            <div class="date" id="current-date">星期一, 2023年1月1日</div>
-        </div>
+            <div class="clock-display" id="clock-display">
+                <div class="time" id="current-time">00:00:00</div>
+                <div class="date" id="current-date">星期一, 2023年1月1日</div>
+            </div>
 
-        <div class="alarm-form">
-            <div class="form-row">
-                <div class="input-group">
-                    <label for="alarm-hours">时 | Hours</label>
-                    <select id="alarm-hours">
-                        <!-- Will be filled by JavaScript -->
-                    </select>
+            <div class="alarm-form">
+                <div class="form-row">
+                    <div class="input-group">
+                        <label for="alarm-hours">时 | Hours</label>
+                        <select id="alarm-hours">
+                            <!-- Will be filled by JavaScript -->
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label for="alarm-minutes">分 | Minutes</label>
+                        <select id="alarm-minutes">
+                            <!-- Will be filled by JavaScript -->
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label for="alarm-ampm">AM/PM</label>
+                        <select id="alarm-ampm">
+                            <option value="AM">AM</option>
+                            <option value="PM">PM</option>
+                        </select>
+                    </div>
                 </div>
-                <div class="input-group">
-                    <label for="alarm-minutes">分 | Minutes</label>
-                    <select id="alarm-minutes">
-                        <!-- Will be filled by JavaScript -->
-                    </select>
-                </div>
-                <div class="input-group">
-                    <label for="alarm-ampm">AM/PM</label>
-                    <select id="alarm-ampm">
-                        <option value="AM">AM</option>
-                        <option value="PM">PM</option>
-                    </select>
+                <div class="btn-row">
+                    <button class="btn-primary" id="set-alarm-btn">设置闹钟 | Set Alarm</button>
+                    <button class="btn-secondary" id="clear-alarm-btn">清除 | Clear</button>
                 </div>
             </div>
-            <div class="btn-row">
-                <button class="btn-primary" id="set-alarm-btn">设置闹钟 | Set Alarm</button>
-                <button class="btn-secondary" id="clear-alarm-btn">清除 | Clear</button>
+
+            <div class="sound-controls">
+                <div class="sound-controls-row">
+                    <div class="sound-label">闹钟铃声 |<br>Alarm Sound:</div>
+                    <div class="sound-input">
+                        <select id="alarm-sound-select" class="custom-select">
+                            <option value="https://github.com/fengshengbanxia/alarm-clock/blob/main/aigei_com.mp3?raw=true">自定义铃声</option>
+                            <!-- Custom sounds will be added here by JavaScript -->
+                        </select>
+                    </div>
+                </div>
+
+                <div class="sound-controls-row">
+                    <div class="sound-label">闹钟音量 |<br>Alarm Volume:</div>
+                    <div class="sound-input">
+                        <input type="range" id="alarm-volume" min="0" max="1" step="0.1" value="0.7" class="custom-range">
+                    </div>
+                </div>
+
+                <div class="sound-controls-row">
+                    <div class="sound-label">添加新铃声 |<br>Add New Sound URL:</div>
+                    <div class="sound-input url-input-container">
+                        <input type="text" id="custom-sound-url" placeholder="https://" class="url-input">
+                        <button class="btn-primary add-btn" id="add-sound-btn">添加 |<br>Add</button>
+                    </div>
+                </div>
+
+                <button class="btn-secondary" id="test-sound-btn" style="margin-top: 15px;">测试铃声 | Test Sound</button>
             </div>
+
+            <!-- Alarm list removed from left side, now only shown on right side -->
         </div>
 
-        <div class="sound-controls">
-            <div class="form-row">
-                <div class="input-group">
-                    <label for="alarm-sound-select">闹钟铃声 | Alarm Sound:</label>
-                    <select id="alarm-sound-select">
-                        <option value="https://github.com/fengshengbanxia/alarm-clock/blob/main/aigei_com.mp3?raw=true">自定义铃声 | Custom Sound</option>
-                        <option value="https://assets.mixkit.co/sfx/preview/mixkit-alarm-digital-clock-beep-989.mp3">数字闹钟 | Digital Beep</option>
-                        <option value="https://assets.mixkit.co/sfx/preview/mixkit-classic-alarm-995.mp3">经典闹钟 | Classic Alarm</option>
-                        <option value="https://assets.mixkit.co/sfx/preview/mixkit-alarm-tone-996.mp3">警报声 | Alert Tone</option>
-                        <option value="https://assets.mixkit.co/sfx/preview/mixkit-interface-hint-notification-911.mp3">提示音 | Notification</option>
-                    </select>
-                </div>
-                <div class="input-group">
-                    <label for="alarm-volume">闹钟音量 | Alarm Volume:</label>
-                    <input type="range" id="alarm-volume" min="0" max="1" step="0.1" value="0.7">
-                </div>
+        <div class="alarm-display" id="alarm-display">
+            <div class="alarm-display-title">已设置闹钟 | Set Alarms</div>
+            <div id="alarm-display-list">
+                <!-- Alarms will be displayed here -->
+                <div class="no-alarms-message">没有设置闹钟 | No alarms set</div>
             </div>
-            <button class="btn-secondary" id="test-sound-btn" style="margin-top: 10px;">测试铃声 | Test Sound</button>
-        </div>
-
-        <div class="alarm-list" id="alarm-list">
-            <!-- Alarm items will be added here by JavaScript -->
         </div>
     </div>
 
@@ -465,7 +638,8 @@
         const alarmAmPmSelect = document.getElementById('alarm-ampm');
         const setAlarmBtn = document.getElementById('set-alarm-btn');
         const clearAlarmBtn = document.getElementById('clear-alarm-btn');
-        const alarmListElement = document.getElementById('alarm-list');
+        // Removed alarmListElement as we're only showing alarms on the right side
+        const alarmDisplayListElement = document.getElementById('alarm-display-list');
         const alarmSound = document.getElementById('alarm-sound');
         const alarmVolume = document.getElementById('alarm-volume');
         const alarmSoundSelect = document.getElementById('alarm-sound-select');
@@ -514,12 +688,27 @@
             clearAlarmBtn.addEventListener('click', clearAlarmForm);
             testSoundBtn.addEventListener('click', testAlarmSound);
             alarmSoundSelect.addEventListener('change', updateAlarmSound);
+            document.getElementById('add-sound-btn').addEventListener('click', addCustomSound);
+
+            // Load custom sounds
+            loadCustomSounds();
 
             // Load saved sound preference
             const savedSound = localStorage.getItem('alarmSound');
             if (savedSound) {
-                alarmSoundSelect.value = savedSound;
-                updateAlarmSound();
+                // Check if the saved sound exists in the options
+                let soundExists = false;
+                for (let i = 0; i < alarmSoundSelect.options.length; i++) {
+                    if (alarmSoundSelect.options[i].value === savedSound) {
+                        alarmSoundSelect.value = savedSound;
+                        soundExists = true;
+                        break;
+                    }
+                }
+
+                if (soundExists) {
+                    updateAlarmSound();
+                }
             }
 
             // Close theme dropdown when clicking outside
@@ -605,10 +794,10 @@
 
         // Render all alarms
         function renderAlarms() {
-            alarmListElement.innerHTML = '';
+            alarmDisplayListElement.innerHTML = '';
 
             if (alarms.length === 0) {
-                alarmListElement.innerHTML = '<p style="text-align: center; padding: 10px;">没有设置闹钟 | No alarms set</p>';
+                alarmDisplayListElement.innerHTML = '<div class="no-alarms-message">没有设置闹钟 | No alarms set</div>';
                 return;
             }
 
@@ -631,9 +820,10 @@
                 const formattedHours = displayHours < 10 ? `0${displayHours}` : displayHours;
                 const formattedMinutes = alarm.minutes < 10 ? `0${alarm.minutes}` : alarm.minutes;
 
-                const alarmItem = document.createElement('div');
-                alarmItem.className = 'alarm-item';
-                alarmItem.innerHTML = `
+                // Create display item for the right panel
+                const displayItem = document.createElement('div');
+                displayItem.className = 'alarm-item';
+                displayItem.innerHTML = `
                     <div class="alarm-time">${formattedHours}:${formattedMinutes} ${ampm}</div>
                     <div class="alarm-status">
                         <div class="status-indicator ${alarm.enabled ? 'active' : ''}"></div>
@@ -647,7 +837,7 @@
                     </div>
                 `;
 
-                alarmListElement.appendChild(alarmItem);
+                alarmDisplayListElement.appendChild(displayItem);
             });
         }
 
@@ -853,16 +1043,94 @@
             localStorage.setItem('alarmSound', selectedSound);
         }
 
+        // Add custom sound
+        function addCustomSound() {
+            const customSoundUrl = document.getElementById('custom-sound-url').value.trim();
+
+            // Validate URL
+            if (!customSoundUrl) {
+                alert('请输入有效的URL | Please enter a valid URL');
+                return;
+            }
+
+            // Check if URL already exists
+            let exists = false;
+            for (let i = 0; i < alarmSoundSelect.options.length; i++) {
+                if (alarmSoundSelect.options[i].value === customSoundUrl) {
+                    exists = true;
+                    break;
+                }
+            }
+
+            if (exists) {
+                alert('该铃声URL已存在 | This sound URL already exists');
+                return;
+            }
+
+            // Create a name for the sound based on the URL
+            const urlParts = customSoundUrl.split('/');
+            let soundName = urlParts[urlParts.length - 1].split('.')[0];
+            soundName = '自定义: ' + soundName + ' | Custom: ' + soundName;
+
+            // Add to dropdown
+            const option = document.createElement('option');
+            option.value = customSoundUrl;
+            option.textContent = soundName;
+            alarmSoundSelect.appendChild(option);
+
+            // Select the new sound
+            alarmSoundSelect.value = customSoundUrl;
+            updateAlarmSound();
+
+            // Save custom sounds to localStorage
+            saveCustomSounds();
+
+            // Clear input field
+            document.getElementById('custom-sound-url').value = '';
+
+            alert('铃声已添加 | Sound added successfully');
+        }
+
+        // Save custom sounds to localStorage
+        function saveCustomSounds() {
+            const customSounds = [];
+
+            // Skip the first option (default sound)
+            for (let i = 1; i < alarmSoundSelect.options.length; i++) {
+                customSounds.push({
+                    url: alarmSoundSelect.options[i].value,
+                    name: alarmSoundSelect.options[i].textContent
+                });
+            }
+
+            localStorage.setItem('customSounds', JSON.stringify(customSounds));
+        }
+
+        // Load custom sounds from localStorage
+        function loadCustomSounds() {
+            const customSounds = JSON.parse(localStorage.getItem('customSounds')) || [];
+
+            customSounds.forEach(sound => {
+                const option = document.createElement('option');
+                option.value = sound.url;
+                option.textContent = sound.name;
+                alarmSoundSelect.appendChild(option);
+            });
+        }
+
         // Set theme
         function setTheme(theme) {
             const alarmClock = document.getElementById('alarm-clock');
+            const alarmDisplay = document.getElementById('alarm-display');
 
             // Remove all theme classes
             alarmClock.classList.remove('theme-light', 'theme-blue', 'theme-pink');
+            alarmDisplay.classList.remove('theme-light', 'theme-blue', 'theme-pink');
 
             // Add selected theme class
             if (theme !== 'default') {
                 alarmClock.classList.add(`theme-${theme}`);
+                alarmDisplay.classList.add(`theme-${theme}`);
             }
 
             // Save theme preference
