@@ -121,10 +121,10 @@
         .sound-controls {
             margin-top: 10px;
             padding: 15px;
-            background-color: #d81b60; /* Pink background to match the right panel */
+            background-color: var(--clock-bg); /* Use theme color */
             border-radius: 8px;
             margin-bottom: 10px;
-            color: white;
+            color: var(--text-color);
         }
 
         .sound-controls-row {
@@ -149,9 +149,9 @@
             width: 100%;
             padding: 10px;
             border-radius: 5px;
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            background-color: rgba(0, 0, 0, 0.2);
-            color: white;
+            border: 1px solid var(--border-color);
+            background-color: var(--input-bg);
+            color: var(--input-color);
             font-size: 1rem;
             appearance: none;
             -webkit-appearance: none;
@@ -190,9 +190,9 @@
             flex: 1;
             padding: 10px;
             border-radius: 5px;
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            background-color: rgba(0, 0, 0, 0.2);
-            color: white;
+            border: 1px solid var(--border-color);
+            background-color: var(--input-bg);
+            color: var(--input-color);
             font-size: 1rem;
         }
 
@@ -200,8 +200,8 @@
             width: 80px;
             height: 80px;
             border-radius: 5px;
-            background-color: #8e24aa;
-            color: white;
+            background-color: var(--btn-primary-bg);
+            color: var(--btn-primary-color);
             font-size: 0.9rem;
             line-height: 1.3;
             display: flex;
@@ -308,11 +308,11 @@
 
         .alarm-display {
             width: 450px;
-            background-color: #d81b60; /* Pink background for the alarm display */
+            background-color: var(--clock-bg); /* Use theme color */
             border-radius: 20px;
             padding: 25px;
             box-shadow: 0 10px 25px var(--shadow-color);
-            border: 3px solid #ff3b30;
+            border: 3px solid var(--btn-danger-bg);
             display: flex;
             flex-direction: column;
             height: fit-content;
@@ -335,11 +335,11 @@
 
         .alarm-display-title {
             font-size: 1.8rem;
-            color: white;
+            color: var(--title-color);
             text-align: center;
             margin-bottom: 15px;
             font-weight: bold;
-            border-bottom: 2px solid white;
+            border-bottom: 2px solid var(--border-color);
             padding-bottom: 10px;
         }
 
@@ -431,8 +431,8 @@
         #alarm-display .alarm-item {
             margin-bottom: 15px;
             padding: 15px;
-            background-color: rgba(255, 255, 255, 0.15);
-            border-left: 4px solid white;
+            background-color: var(--display-bg);
+            border-left: 4px solid var(--border-color);
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -445,14 +445,14 @@
             font-weight: bold;
             flex: 1;
             min-width: 120px;
-            color: white;
+            color: var(--display-text);
         }
 
         #alarm-display .alarm-status {
             flex: 1;
             justify-content: center;
             min-width: 120px;
-            color: white;
+            color: var(--text-color);
         }
 
         #alarm-display .alarm-actions {
@@ -502,9 +502,9 @@
             text-align: center;
             padding: 30px;
             font-size: 1.3rem;
-            color: white;
+            color: var(--text-color);
             opacity: 0.7;
-            border: 2px dashed rgba(255, 255, 255, 0.3);
+            border: 2px dashed var(--border-color);
             border-radius: 10px;
             margin: 20px 0;
         }
@@ -1120,17 +1120,23 @@
 
         // Set theme
         function setTheme(theme) {
+            const body = document.body;
             const alarmClock = document.getElementById('alarm-clock');
             const alarmDisplay = document.getElementById('alarm-display');
+            const soundControls = document.querySelector('.sound-controls');
 
             // Remove all theme classes
+            body.classList.remove('theme-light', 'theme-blue', 'theme-pink');
             alarmClock.classList.remove('theme-light', 'theme-blue', 'theme-pink');
             alarmDisplay.classList.remove('theme-light', 'theme-blue', 'theme-pink');
+            soundControls.classList.remove('theme-light', 'theme-blue', 'theme-pink');
 
             // Add selected theme class
             if (theme !== 'default') {
+                body.classList.add(`theme-${theme}`);
                 alarmClock.classList.add(`theme-${theme}`);
                 alarmDisplay.classList.add(`theme-${theme}`);
+                soundControls.classList.add(`theme-${theme}`);
             }
 
             // Save theme preference
